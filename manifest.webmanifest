@@ -2,6 +2,7 @@
   "name": "Orange",
   "short_name": "Orange",
   "description": "Personal HIT training log",
+  "id": "/orange-app",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
