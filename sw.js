@@ -3,7 +3,7 @@
 // opens with no network (including after a full close), and keep the old version
 // until the user taps "Update" (no surprise reloads mid-workout).
 
-const VERSION = "8.0.0-6321538513";
+const VERSION = "8.0.0-1ac0609604";
 const CACHE = `orange-${VERSION}`;
 const PRECACHE = ["./","./index.html","./manifest.webmanifest","./assets/app-0887505567.js","./assets/app-29da0d41d7.css","./icons/icon-192.png","./icons/icon-512.png","./icons/maskable-512.png","./icons/apple-touch-icon.png","./fonts/orange-pixel.woff"];
 
@@ -47,6 +47,13 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match("./index.html", { ignoreSearch: true }).then((hit) => hit || fetch(req))
     );
+    return;
+  }
+
+  // The manifest is network-first: Chrome reads it to decide install state and icons, so it
+  // must see the current one, not the copy cached with an older version.
+  if (url.pathname.endsWith("/manifest.webmanifest")) {
+    event.respondWith(fetch(req, { cache: "no-store" }).catch(() => caches.match(req, { ignoreSearch: true })));
     return;
   }
 
